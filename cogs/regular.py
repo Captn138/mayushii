@@ -8,6 +8,12 @@ class Regular(commands.Cog):
         self.client = client
     
     @commands.command()
+    async def tuturu(self, ctx):
+        destination = ctx.message.author.voice.channel
+        vc = await destination.connect()
+        vc.play(discord.FFmpegPCMAudio('tuturu.mp3'))
+
+    @commands.command()
     async def invite(self, ctx):
         print(">>>Called command 'invite'")
         await ctx.message.delete()
