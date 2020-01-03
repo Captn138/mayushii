@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 
 meta = open("meta.txt", "r").readlines()
 
@@ -12,6 +13,8 @@ class Regular(commands.Cog):
         destination = ctx.message.author.voice.channel
         vc = await destination.connect()
         vc.play(discord.FFmpegPCMAudio('tuturu.mp3'))
+        await asyncio.sleep(2)
+        await vc.disconnect()
 
     @commands.command()
     async def invite(self, ctx):

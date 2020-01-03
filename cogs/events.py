@@ -29,7 +29,7 @@ class Events(commands.Cog):
             file.write("\nFalse")
         await guild.owner.send("Tuturuuu! I'm Mayushii ☆! Thanks for adding me to your guild! My prefix is **.**. Don't forget to place my role on top of all the others so I can work properly.")
 
-    '''@commands.Cog.listener()
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             pass
@@ -38,7 +38,7 @@ class Events(commands.Cog):
         elif isinstance(error, commands.ExtensionNotLoaded):
             pass
         elif isinstance(error, commands.CommandInvokeError):
-            print("COMMAND INVOKE ERROR")'''
+            print("COMMAND INVOKE ERROR")
 
 def setup(client):
     client.add_cog(Events(client))
