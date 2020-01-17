@@ -1,6 +1,6 @@
 0.2.1
 https://discordapp.com/oauth2/authorize?client_id=479774802899501056&permissions=8&scope=bot
-https://discord.gg/b4E9cXp
+https://discord.gg/qDJdDEn
 https://cdn.discordapp.com/attachments/479409875860979712/492483239580008458/Mayuri_Shiina.png
 https://cdn.discordapp.com/attachments/479418707530088448/492480622556872706/micka.png
 
