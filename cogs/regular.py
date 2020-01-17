@@ -8,8 +8,9 @@ class Regular(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    @commands.command()
+    @commands.command(aliases = ['t'])
     async def tuturu(self, ctx):
+        print(">>>Called command 'tuturu'")
         destination = ctx.message.author.voice.channel
         vc = await destination.connect()
         vc.play(discord.FFmpegPCMAudio('tuturu.mp3'))
@@ -67,16 +68,27 @@ class Regular(commands.Cog):
         print(f">>>Called command 'help' with argument {com}")
         if com == "NULL":
             embed = discord.Embed(title = "Mayushii ☆'s help menu (alias : .h)", description = "For details, type .help <argument>. List of commands are:", color = 0xa1ee33)
+            embed.add_field(name = "*****", inline = False)
+            embed.add_field(name = "REGULAR COMMANDS", inline = False)
             embed.add_field(name = ".info", value = "Gives a little info about the bot.", inline = False)
             embed.add_field(name = ".help", value = "Gives this message.", inline = False)
             embed.add_field(name = ".invite", value = "Gives you an invite link to **Je pars à Gé**.", inline = False)
             embed.add_field(name = ".dev", value = "Shows the development panel.", inline = False)
             embed.add_field(name = ".ping", value = "Gives you the bot's ping.", inline = False)
+            embed.add_field(name = ".tuturu", value = "Plays a nice \"Tuturu\" in your voice channel", inline = False)
+            embed.add_field(name = "*****", inline = False)
+            embed.add_field(name = "ADMIN COMMANDS", inline = False)
             embed.add_field(name = ".autorole", value = "Change the autorole. Manage roles required.", inline = False)
             embed.add_field(name = ".clear", value = "Clears an amount of messages in the channel. Manage messages required", inline = False)
             embed.add_field(name = ".kick", value = "Kicks a user. Kick members required.", inline = False)
             embed.add_field(name = ".ban", value = "Bans a user. Ban members required.", inline = False)
             embed.add_field(name = ".unban", value = "Unbans a user. Ban members required.", inline = False)
+            await ctx.send(embed = embed, delete_after = 10)
+        elif com == "tuturu":
+            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
+            embed.add_field(name = ".tuturu", value = "Plays a nice \"Tuturu\" in your voice channel. Must be connected to a voice channel", inline = False)
+            embed.add_field(name = "Usage:", value = ".tuturu", inline = False)
+            embed.add_field(name = "Aliases:", value = ".t", inline = False)
             await ctx.send(embed = embed, delete_after = 10)
         elif com == "autorole":
             embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
