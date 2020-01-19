@@ -27,7 +27,8 @@ if [ $(python3 -m pip list|grep PyNaCl|wc -l) -lt 1 ]
 then
 	python3 -m pip install PyNaCl
 fi
-echo ****************************************** >> python.log
+
+printf "\n\n=========================================================================\n" >> python.log
 date >> python.log
 python3 bot.py >> python.log
 
