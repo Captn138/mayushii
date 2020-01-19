@@ -1,4 +1,7 @@
 #!/bin/bash
+
+while [ true ]; do
+
 if [ $(dpkg -l|grep ffmpeg|wc -l) -lt 1 ]
 then
 	apt-get install ffmpeg
@@ -27,3 +30,5 @@ fi
 echo ****************************************** >> python.log
 date >> python.log
 python3 bot.py >> python.log
+
+done
