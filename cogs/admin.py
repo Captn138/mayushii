@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands
 
 meta = open("meta.txt", "r").readlines()
@@ -7,12 +8,23 @@ class Admin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @commands.command(aliases = ['st'])
+    async def speedtest(self, ctx):
+        if ctx.message.author.guild_permissions.administrator == True:
+            print(">>>Called command 'speedtest'")
+            await ctx.message.delete()
+            await ctx.send("SpeedTest started! I will be unavailable while the test is running!", delete_after = 1)
+            os.system('bash speedtest.sh')
+            await ctx.send("SpeedTest finished!", delete_after = 5)
+
     @commands.command(aliases = ['c'])
     async def clear(self, ctx, amount: int = 1, userArg = 'NULL'):
         if ctx.message.author.guild_permissions.manage_messages == True:
             print(f">>>Called command 'clear' with argument {amount} : {ctx.message.author}")
             if userArg != 'NULL':
-                userid = str(userArg)[2:-1]
+                print(userArg)
+                print(str(userArg)[3:-1])
+                userid = str(userArg)[3:-1]
                 await ctx.message.delete()
                 async for message in ctx.channel.history(limit = 500):
                     counter = 0

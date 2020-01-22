@@ -1,4 +1,4 @@
-0.2.2
+0.2.3
 https://discordapp.com/oauth2/authorize?client_id=479774802899501056&permissions=8&scope=bot
 https://discord.gg/qDJdDEn
 https://cdn.discordapp.com/attachments/479409875860979712/492483239580008458/Mayuri_Shiina.png
