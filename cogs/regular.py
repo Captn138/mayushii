@@ -8,7 +8,7 @@ class Regular(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    @commands.command(aliases = ['t'])
+    @commands.command(aliases = ['t']) #DEPRECATED
     async def tuturu(self, ctx):
         print(">>>Called command 'tuturu'")
         destination = ctx.message.author.voice.channel
