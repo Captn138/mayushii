@@ -9,4 +9,6 @@ pip install discord-py -U
 Don't forget to update the `client.run(TOKEN)` with your own personal bot token in `bot.py`.
 
 ##Run
-`python3 bot.py`
+```python
+python3 bot.py
+```
