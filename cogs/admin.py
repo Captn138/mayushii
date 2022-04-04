@@ -1,28 +1,18 @@
 import discord
-import os
 from discord.ext import commands
 
-meta = open("meta.txt", "r").readlines()
 
 class Admin(commands.Cog):
+
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases = ['st'])
-    async def speedtest(self, ctx):
-        if ctx.message.author.guild_permissions.administrator == True:
-            print(">>>Called command 'speedtest'")
-            await ctx.message.delete()
-            await ctx.send("SpeedTest started! I will be unavailable while the test is running!", delete_after = 1)
-            os.system('bash speedtest.sh')
-            await ctx.send("SpeedTest finished!", delete_after = 5)
-
     @commands.command(aliases = ['c'])
-    async def clear(self, ctx, amount: int = 1, userArg = 'NULL'):
+    async def clear(self, ctx, amount: int = 1, userArg = None):
         if ctx.message.author.guild_permissions.manage_messages == True:
             print(f">>>Called command 'clear' with argument {amount} : {ctx.message.author}")
-            if userArg != 'NULL':
-                print(userArg)
+            if userArg != None:
+                print(f" Targeted user: {userArg}")
                 print(str(userArg)[3:-1])
                 userid = str(userArg)[3:-1]
                 await ctx.message.delete()
@@ -34,18 +24,18 @@ class Admin(commands.Cog):
                             await message.delete()
             else:
                 await ctx.channel.purge(limit = amount+1)
-            await ctx.send(f"I have deleted {amount} messages for ya! Ain't I a good girl?", delete_after = 5)
+            await ctx.send(f"I have deleted {amount} messages for ya!", delete_after = 5)
 
     @commands.command()
     async def kick(self, ctx, member: discord.Member, *, reason = None):
         if ctx.message.author.guild_permissions.kick_members == True:
-            print(f">>>Called command 'kick' of {member} with reason {reason} : {ctx.message.author}")
+            print(f">>>Called command 'kick' of {member} with reason '{reason}' : {ctx.message.author}")
             await member.kick(reason = reason)
 
     @commands.command()
     async def ban(self, ctx, member: discord.Member, *, reason = None):
         if ctx.message.author.guild_permissions.ban_members == True:
-            print(f">>>Called command 'ban' of {member} with reason {reason} : {ctx.message.author}")
+            print(f">>>Called command 'ban' of {member} with reason '{reason}' : {ctx.message.author}")
             await member.ban(reason = reason)
 
     @commands.command()
@@ -65,16 +55,14 @@ class Admin(commands.Cog):
         if ctx.message.author.guild_permissions.manage_roles == True:
             print(f">>>Called command 'autorole' on [{ctx.guild}] with argument {var} : {ctx.message.author}")
             data = []
+            with open(f"./guilds/{ctx.guild.id}.guild", "r") as file:
+                data = file.readlines()
             if var == 'False':
-                with open(f"./guilds/{ctx.guild.id}.txt", "r") as file:
-                    data = file.readlines()
-                with open(f"./guilds/{ctx.guild.id}.txt", "w") as file:
+                with open(f"./guilds/{ctx.guild.id}.guild", "w") as file:
                     file.write(data[0])
                     file.write("False")
                 await ctx.send("Autoroles have been disabled", delete_after = 5)
             elif var == 'True':
-                with open(f"./guilds/{ctx.guild.id}.txt", "r") as file:
-                    data = file.readlines()
                 await ctx.send("Type the new autorole, or type 'cancel' to cancel the operation", delete_after = 15)
                 answer = await self.client.wait_for('message', timeout = 15)
                 if answer.content == 'cancel':
@@ -82,7 +70,7 @@ class Admin(commands.Cog):
                     await answer.delete()
                     return
                 else:
-                    with open(f"./guilds/{ctx.guild.id}.txt", "w") as file:
+                    with open(f"./guilds/{ctx.guild.id}.guild", "w") as file:
                         file.write(f"{answer.content}\nTrue")
                     await ctx.send(f"Autoroles have been changed to {answer.content}", delete_after = 5)
 

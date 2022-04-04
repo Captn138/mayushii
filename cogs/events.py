@@ -1,10 +1,9 @@
-import discord
-import os
+import discord, os
 from discord.ext import commands
 
-meta = open("meta.txt", "r").readlines()
 
 class Events(commands.Cog):
+
     def __init__(self, client):
         self.client = client
 
@@ -14,7 +13,7 @@ class Events(commands.Cog):
             print(f'>>>>>[{member.guild}] New member: {member}')
             data = []
             for filename in os.listdir('./guilds'):
-                if filename == f'{member.guild.id}.txt':
+                if filename == f'{member.guild.id}.guild':
                     with open(f'./guilds/{filename}', 'r') as file:
                         data = file.readlines()
             if data[1] == 'True':
@@ -25,20 +24,17 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        with open(f"./guilds/{guild.id}.txt", "w+") as file:
+        with open(f"./guilds/{guild.id}.guild", "w+") as file:
             file.write("\nFalse")
-        await guild.owner.send("Tuturuuu! I'm Mayushii ☆! Thanks for adding me to your guild! My prefix is **.**. Don't forget to place my role on top of all the others so I can work properly.")
+        await guild.owner.send(f"Tuturuuu! I'm {self.client.user.name}! Thanks for adding me to your guild! My prefix is **{self.client.get_prefix()}**. Don't forget to place my role on top of all the others so I can work properly.")
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            pass
-        elif isinstance(error, commands.MissingRequiredArgument):
-            pass
-        elif isinstance(error, commands.ExtensionNotLoaded):
+        passerrors = (commands.CommandNotFound, commands.MissingRequiredArgument)
+        if isinstance(error, passerrors):
             pass
         elif isinstance(error, commands.CommandInvokeError):
-            print("COMMAND INVOKE ERROR")
+            print(f"Exception on command '{ctx.message.content}':\n\t{error}")
 
 def setup(client):
     client.add_cog(Events(client))

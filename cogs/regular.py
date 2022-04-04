@@ -1,10 +1,10 @@
-import discord
+import discord, asyncio
 from discord.ext import commands
-import asyncio
+from meta import MetaInfo as MI
 
-meta = open("meta.txt", "r").readlines()
 
 class Regular(commands.Cog):
+
     def __init__(self, client):
         self.client = client
     
@@ -21,7 +21,7 @@ class Regular(commands.Cog):
     async def invite(self, ctx):
         print(">>>Called command 'invite'")
         await ctx.message.delete()
-        bot_message = await ctx.send(f"Here's an invite link to my creator's server! Link will be removed in 15 seconds: {meta[2]}")
+        bot_message = await ctx.send(f"Here's an invite link to my creator's server! Link will be removed in 15 seconds: {MI.get_owner_server_invite_link()}")
         await bot_message.delete(delay = 15)
 
     @commands.command()
@@ -33,8 +33,8 @@ class Regular(commands.Cog):
     @commands.command()
     async def dev(self, ctx):
         print(">>>Called command 'dev'")
-        embed = discord.Embed(title = "Mayushii ☆'s dev history", description = "All my updates should be here.", color = 0xa1ee33)
-        embed.set_thumbnail(url = meta[3])
+        embed = discord.Embed(title = f"{self.client.user.name}'s dev history", description = "All my updates should be here.", color = 0xa1ee33)
+        embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
         embed.add_field(name = "Ver 0.2.3", value = "Added .speedtest command.", inline = False)
         embed.add_field(name = "Ver 0.2.2", value = "Added .tuturu command.", inline = False)
         embed.add_field(name = "Ver 0.2.1", value = "Re-implemented autoroles command. 100% working.", inline = False)
@@ -52,97 +52,74 @@ class Regular(commands.Cog):
     @commands.command(aliases = ['i'])
     async def info(self, ctx):
         print(">>>Called command 'info'")
-        embed = discord.Embed(title = "Mayushii ☆", description = "Cute Mayushii doing her best for ya!", color = 0xa1ee33)
-        embed.set_author(name = "Captn138#0505 's", icon_url = meta[4])
-        embed.set_thumbnail(url = meta[3])
-        embed.add_field(name = "Gild count", value = len(self.client.guilds))
-        data = []
-        with open(f"./guilds/{ctx.guild.id}.txt", "r") as file:
-            data = file.readlines()
-        embed.add_field(name = "Guild autorole", value = f"{data[0][:-1]} ({data[1]})")
-        embed.add_field(name = "Invite", value = meta[1], inline = False)
-        embed.set_footer(text = "Bot version : {}".format(meta[0]))
+        embed = discord.Embed(title = f"{self.client.user.name}", description = "Cute Mayushii doing her best for ya!", color = 0xa1ee33)
+        print(self.client.owner_id)
+        # embed.set_author(name = f"{await self.client.owner_id} 's", icon_url = (await self.client.owner_id).avatar_url)
+        # embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
+        # embed.add_field(name = "Gild count", value = len(self.client.guilds))
+        # data = []
+        # with open(f"./guilds/{ctx.guild.id}.guild", "r") as file:
+        #     data = file.readlines()
+        # embed.add_field(name = "Guild autorole", value = f"{data[0][:-1]} ({data[1]})")
+        # embed.add_field(name = "Invite", value = MI.get_owner_server_invite_link(), inline = False)
+        # embed.set_footer(text = f"Bot version : {MI.get_bot_version()}")
         await ctx.send(embed = embed, delete_after = 20)
         await ctx.message.delete()
 
     @commands.command(aliases = ['h'])
-    async def help(self, ctx, com = "NULL"):
+    async def help(self, ctx, com = None):
         print(f">>>Called command 'help' with argument {com}")
-        if com == "NULL":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu (alias : .h)", description = "For details, type .help <argument>. List of commands are:", color = 0xa1ee33)
+        if com == None:
+            embed = discord.Embed(title = f"{self.client.user.name}'s help menu (alias : {self.client.get_prefix()}h)", description = "For details, type .help <argument>. List of commands are:", color = 0xa1ee33)
             embed.add_field(name = "REGULAR COMMANDS", value = "=======", inline = False)
-            embed.add_field(name = ".info", value = "Gives a little info about the bot.", inline = False)
-            embed.add_field(name = ".help", value = "Gives this message.", inline = False)
-            embed.add_field(name = ".invite", value = "Gives you an invite link to **Je pars à Gé**.", inline = False)
-            embed.add_field(name = ".dev", value = "Shows the development panel.", inline = False)
-            embed.add_field(name = ".ping", value = "Gives you the bot's ping.", inline = False)
-            embed.add_field(name = ".tuturu", value = "Plays a nice \"Tuturu\" in your voice channel", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}info", value = "Gives a little info about the bot.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}help", value = "Gives this message.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}invite", value = "Gives you an invite link to **Je pars à Gé**.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}dev", value = "Shows the development panel.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}ping", value = "Gives you the bot's ping.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}tuturu", value = "Plays a nice \"Tuturu\" in your voice channel", inline = False)
             embed.add_field(name = "ADMIN COMMANDS", value = "=======", inline = False)
-            embed.add_field(name = ".speedtest", value = "Proceeds to a server speedtest. Admin required", inline = False)
-            embed.add_field(name = ".autorole", value = "Change the autorole. Manage roles required.", inline = False)
-            embed.add_field(name = ".clear", value = "Clears an amount of messages in the channel. Manage messages required", inline = False)
-            embed.add_field(name = ".kick", value = "Kicks a user. Kick members required.", inline = False)
-            embed.add_field(name = ".ban", value = "Bans a user. Ban members required.", inline = False)
-            embed.add_field(name = ".unban", value = "Unbans a user. Ban members required.", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "speedtest":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".speedtest", value = "Admin lock! Proceeds to a server speedtest.")
-            embed.add_field(name = "Usage:", value = ".speedtest", inline = False)
-            embed.add_field(name = "Aliases:", value = ".st", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "tuturu":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".tuturu", value = "Plays a nice \"Tuturu\" in your voice channel. Must be connected to a voice channel.", inline = False)
-            embed.add_field(name = "Usage:", value = ".tuturu", inline = False)
-            embed.add_field(name = "Aliases:", value = ".t", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "autorole":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".autorole", value = "Manage roles lock! Changes the role given automatically when a new member joins the server.", inline = False)
-            embed.add_field(name = "Usage:", value = ".autorole <True/False>", inline = False)
-            embed.add_field(name = "Aliases:", value = ".arole", inline = False)
-            embed.add_field(name = "Warning:", value = "You will be asked for a new role name after. You can cancel the operation.", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "kick":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".kick", value = "Kick members lock! Kicks a member from the channel.", inline = False)
-            embed.add_field(name = "Usage:", value = ".kick <@member> (reason)", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "ban":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".ban", value = "Ban members lock! Bans a member from the channel", inline = False)
-            embed.add_field(name = "Usage:", value = ".ban <@member> (reason)", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "unban":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".unban", value = "Ban members lock! Unbans a member from the channel", inline = False)
-            embed.add_field(name = "Usage:", value = ".unban <Member#xxxx>", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "ping":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".ping", value = "Calculates the bot's ping and sends it in the channel.", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "dev":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".dev", value = "Shows the development panel, which contains all the updates history and the upcoming updates.", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "clear":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".clear", value = "Clears a specified amount of messages in the channel. If used with a @mention, clears an amount of messages from the specified user. Warning : limit is 500 messages", inline = False)
-            embed.add_field(name = "Usage:", value = ".clear (amount) (@mention)", inline = False)
-            embed.add_field(name = "Aliases:", value = ".c", inline = False)
-            embed.add_field(name = "Warning:", value = "By default, it will clear the last message", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "info":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".info", value = "Gives you infos about the bot: Creator, uptime, number of guilds and a link to get it.")
-            embed.add_field(name = "Aliases:", value = ".i", inline = False)
-            await ctx.send(embed = embed, delete_after = 10)
-        elif com == "invite":
-            embed = discord.Embed(title = "Mayushii ☆'s help menu", description = "Specific command:", color = 0xa1ee33)
-            embed.add_field(name = ".invite", value = "Sends an invite to the Creator's discord guild.")
-            await ctx.send(embed = embed, delete_after = 10)
+            embed.add_field(name = f"{self.client.get_prefix()}autorole", value = "Change the autorole. Manage roles required.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}clear", value = "Clears an amount of messages in the channel. Manage messages required", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}kick", value = "Kicks a user. Kick members required.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}ban", value = "Bans a user. Ban members required.", inline = False)
+            embed.add_field(name = f"{self.client.get_prefix()}unban", value = "Unbans a user. Ban members required.", inline = False)
+        else:
+            embed = discord.Embed(title = f"{self.client.user.name}'s help menu", description = "Specific command:", color = 0xa1ee33)
+            if com == "tuturu":
+                embed.add_field(name = f"{self.client.get_prefix()}tuturu", value = "Plays a nice \"Tuturu\" in your voice channel. Must be connected to a voice channel.", inline = False)
+                embed.add_field(name = "Usage:", value = f"{self.client.get_prefix()}tuturu", inline = False)
+                embed.add_field(name = "Aliases:", value = f"{self.client.get_prefix()}t", inline = False)
+            elif com == "autorole":
+                embed.add_field(name = f"{self.client.get_prefix()}autorole", value = "Manage roles lock! Changes the role given automatically when a new member joins the server.", inline = False)
+                embed.add_field(name = "Usage:", value = f"{self.client.get_prefix()}autorole <True/False>", inline = False)
+                embed.add_field(name = "Aliases:", value = f"{self.client.get_prefix()}arole", inline = False)
+                embed.add_field(name = "Warning:", value = "You will be asked for a new role name after. You can cancel the operation.", inline = False)
+            elif com == "kick":
+                embed.add_field(name = f"{self.client.get_prefix()}kick", value = "Kick members lock! Kicks a member from the channel.", inline = False)
+                embed.add_field(name = "Usage:", value = f"{self.client.get_prefix()}kick <@member> (reason)", inline = False)
+            elif com == "ban":
+                embed.add_field(name = f"{self.client.get_prefix()}ban", value = "Ban members lock! Bans a member from the channel", inline = False)
+                embed.add_field(name = "Usage:", value = f"{self.client.get_prefix()}ban <@member> (reason)", inline = False)
+            elif com == "unban":
+                embed.add_field(name = f"{self.client.get_prefix()}unban", value = "Ban members lock! Unbans a member from the channel", inline = False)
+                embed.add_field(name = "Usage:", value = f"{self.client.get_prefix()}unban <Member#xxxx>", inline = False)
+            elif com == "ping":
+                embed.add_field(name = f"{self.client.get_prefix()}ping", value = "Calculates the bot's ping and sends it in the channel.", inline = False)
+            elif com == "dev":
+                embed.add_field(name = f"{self.client.get_prefix()}dev", value = "Shows the development panel, which contains all the updates history and the upcoming updates.", inline = False)
+            elif com == "clear":
+                embed.add_field(name = f"{self.client.get_prefix()}clear", value = "Clears a specified amount of messages in the channel. If used with a @mention, clears an amount of messages from the specified user. Warning : limit is 500 messages", inline = False)
+                embed.add_field(name = "Usage:", value = f"{self.client.get_prefix()}clear (amount) (@mention)", inline = False)
+                embed.add_field(name = "Aliases:", value = f"{self.client.get_prefix()}c", inline = False)
+                embed.add_field(name = "Warning:", value = "By default, it will clear the last message", inline = False)
+            elif com == "info":
+                embed.add_field(name = f"{self.client.get_prefix()}info", value = "Gives you infos about the bot: Creator, uptime, number of guilds and a link to get it.")
+                embed.add_field(name = "Aliases:", value = f"{self.client.get_prefix()}i", inline = False)
+            elif com == "invite":
+                embed = discord.Embed(title = f"{self.client.user.name}'s help menu", description = "Specific command:", color = 0xa1ee33)
+                embed.add_field(name = f"{self.client.get_prefix()}invite", value = "Sends an invite to the Creator's discord guild.")
+        await ctx.send(embed = embed, delete_after = 10)
         await ctx.message.delete()
 
 def setup(client):

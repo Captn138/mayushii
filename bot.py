@@ -1,98 +1,92 @@
-import discord
-import datetime
-import os
-from discord.ext import commands, tasks
-from itertools import cycle
+import discord, datetime, itertools, os, dotenv
+from discord.ext import tasks, commands
+from meta import MetaInfo as MI
 
-client = commands.Bot(command_prefix = '.')
-client.remove_command('help')
-
-meta = open("meta.txt", "r").readlines()
-status = cycle(['with Okarin', 'GUILDS', 'UPTIME', f'in ver {meta[0]}'])
-start_time = datetime.datetime.utcnow()
-uptime_stamp = ''
 current_status = ''
+status = itertools.cycle(['with Okarin', 'GUILDS', 'UPTIME', f"in ver {MI.get_bot_version()}"])
+start_time = datetime.datetime.utcnow()
+
+client = commands.Bot('.')
 
 def uptime():
-    global uptime_stamp
     now = datetime.datetime.utcnow()
     delta = now-start_time
     hours, remainder = divmod(int(delta.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
     days, hours = divmod(hours, 24)
-    time_format = "{d} days, {h} hours, {m} minutes, and {s} seconds."
-    uptime_stamp = time_format.format(d=days, h=hours, m=minutes, s=seconds)
+    return f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds."
 
 @tasks.loop(seconds = 10)
 async def change_status():
-    uptime()
     global current_status
     current_status = next(status)
     if current_status == 'UPTIME':
-        await client.change_presence(status = discord.Status.idle, activity = discord.Game(name = f'since {uptime_stamp}'))
+        status_text = f"since {uptime()}"
     elif current_status == 'GUILDS':
-        await client.change_presence(status = discord.Status.idle, activity = discord.Game(name = f'in {len(client.guilds)} guilds'))
+        status_text = f"in {len(client.guilds)} servers"
     else:
-        await client.change_presence(status = discord.Status.idle, activity = discord.Game(name = current_status))
+        status_text = current_status
+    await client.change_presence(status = discord.Status.idle, activity = discord.Game(name = status_text))
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
+    print(f"{client.user.name} (id: {client.user.id}) logged in !")
     change_status.start()
 
-@client.command()
-async def reload(ctx, extension = 'NULL'):
-    if ctx.message.author.id == int(open("owner.txt", "r").readline(18)):
-        if extension != 'NULL':
-            client.unload_extension(f'cogs.{extension}')
-            print(f"Unloaded {extension}.py")
-            client.load_extension(f'cogs.{extension}')
-            print(f"Loaded {extension}.py")
-        else:
-            for filename in os.listdir('./cogs'):
-                if filename.endswith('.py'):
-                    client.unload_extension(f'cogs.{filename[:-3]}')
-            print("Unloaded all extensions")
-            for filename in os.listdir('./cogs'):
-                if filename.endswith('.py'):
-                    client.load_extension(f'cogs.{filename[:-3]}')
-            print("Loaded all extensions")
+def load_all():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.load_extension(f"cogs.{filename[:-3]}")
+    print("Loaded all extensions")
+
+def unload_all():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            client.unload_extension(f"cogs.{filename[:-3]}")
+    print("Unloaded all extensions")
 
 @client.command()
-async def load(ctx, extension = 'NULL'):
-    if ctx.message.author.id == int(open("owner.txt", "r").readline(18)):
-        if extension != 'NULL':
-            client.load_extension(f'cogs.{extension}')
+async def reload(ctx, extension = None):
+    if ctx.message.author.id == MI.get_author_id():
+        if extension != None:
+            client.unload_extension(f"cogs.{extension}")
+            print(f"Unloaded {extension}.py")
+            client.load_extension(f"cogs.{extension}")
             print(f"Loaded {extension}.py")
         else:
-            for filename in os.listdir('./cogs'):
-                if filename.endswith('.py'):
-                    client.load_extension(f'cogs.{filename[:-3]}')
-            print("Loaded all extensions")
+            unload_all()
+            load_all()
 
 @client.command()
-async def unload(ctx, extension = 'NULL'):
-    if ctx.message.author.id == int(open("owner.txt", "r").readline(18)):
-        if extension != 'NULL':
-            client.unload_extension(f'cogs.{extension}')
+async def load(ctx, extension = None):
+    if ctx.message.author.id == MI.get_author_id():
+        if extension != None:
+            client.load_extension(f"cogs.{extension}")
+            print(f"Loaded {extension}.py")
+        else:
+            load_all()
+
+@client.command()
+async def unload(ctx, extension = None):
+    if ctx.message.author.id == MI.get_author_id():
+        if extension != None:
+            client.unload_extension(f"cogs.{extension}")
             print(f"Unloaded {extension}.py")
         else:
-            for filename in os.listdir('./cogs'):
-                if filename.endswith('.py'):
-                    client.unload_extension(f'cogs.{filename[:-3]}')
-            print("Unloaded all extensions")
+            unload_all()
 
 @client.command(aliases = ['oof'])
 async def off(ctx):
-    if ctx.message.author.id == int(open("owner.txt", "r").readline(18)):
+    if ctx.message.author.id == MI.get_author_id():
         print("Shutting down...")
-        await client.logout()
+        await client.close()
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
-        print(f"Loaded {filename}")
+def main():
+    dotenv.load_dotenv()
+    TOKEN = os.getenv('TOKEN')
+    client.remove_command('help')
+    load_all()
+    client.run(TOKEN)
 
-client.run(TOKEN)
+if __name__ == "__main__":
+    main()
