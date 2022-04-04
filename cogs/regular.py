@@ -1,4 +1,4 @@
-import discord, asyncio
+import discord, asyncio, logging
 from discord.ext import commands
 from meta import MetaInfo as MI
 
