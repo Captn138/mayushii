@@ -7,10 +7,10 @@ class Regular(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-    
+
     @commands.command(aliases = ['t']) #DEPRECATED
     async def tuturu(self, ctx):
-        print(">>>Called command 'tuturu'")
+        logging.info(">>>Called command 'tuturu'")
         destination = ctx.message.author.voice.channel
         vc = await destination.connect()
         vc.play(discord.FFmpegPCMAudio('tuturu.mp3'))
@@ -19,20 +19,20 @@ class Regular(commands.Cog):
 
     @commands.command()
     async def invite(self, ctx):
-        print(">>>Called command 'invite'")
+        logging.info(">>>Called command 'invite'")
         await ctx.message.delete()
         bot_message = await ctx.send(f"Here's an invite link to my creator's server! Link will be removed in 15 seconds: {MI.get_owner_server_invite_link()}")
         await bot_message.delete(delay = 15)
 
     @commands.command()
     async def ping(self, ctx):
-        print(">>>Called command 'ping'")
+        logging.info(">>>Called command 'ping'")
         await ctx.send(f'Pong! [{round(self.client.latency*1000)}ms]', delete_after = 3)
         await ctx.message.delete(delay = 3)
 
     @commands.command()
     async def dev(self, ctx):
-        print(">>>Called command 'dev'")
+        logging.info(">>>Called command 'dev'")
         embed = discord.Embed(title = f"{self.client.user.name}'s dev history", description = "All my updates should be here.", color = 0xa1ee33)
         embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
         embed.add_field(name = "Ver 0.2.3", value = "Added .speedtest command.", inline = False)
@@ -51,24 +51,23 @@ class Regular(commands.Cog):
 
     @commands.command(aliases = ['i'])
     async def info(self, ctx):
-        print(">>>Called command 'info'")
+        logging.info(">>>Called command 'info'")
         embed = discord.Embed(title = f"{self.client.user.name}", description = "Cute Mayushii doing her best for ya!", color = 0xa1ee33)
-        print(self.client.owner_id)
-        # embed.set_author(name = f"{await self.client.owner_id} 's", icon_url = (await self.client.owner_id).avatar_url)
-        # embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
-        # embed.add_field(name = "Gild count", value = len(self.client.guilds))
-        # data = []
-        # with open(f"./guilds/{ctx.guild.id}.guild", "r") as file:
-        #     data = file.readlines()
-        # embed.add_field(name = "Guild autorole", value = f"{data[0][:-1]} ({data[1]})")
-        # embed.add_field(name = "Invite", value = MI.get_owner_server_invite_link(), inline = False)
-        # embed.set_footer(text = f"Bot version : {MI.get_bot_version()}")
+        embed.set_author(name = f"{await self.client.fetch_user(self.client.owner_id)} 's", icon_url = (await self.client.fetch_user(self.client.owner_id)).avatar_url)
+        embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
+        embed.add_field(name = "Gild count", value = len(self.client.guilds))
+        data = []
+        with open(f"./guilds/{ctx.guild.id}.guild", "r") as file:
+            data = file.readlines()
+        embed.add_field(name = "Guild autorole", value = f"{data[0][:-1]} ({data[1]})")
+        embed.add_field(name = "Invite", value = MI.get_owner_server_invite_link(), inline = False)
+        embed.set_footer(text = f"Bot version : {MI.get_bot_version()}")
         await ctx.send(embed = embed, delete_after = 20)
         await ctx.message.delete()
 
     @commands.command(aliases = ['h'])
     async def help(self, ctx, com = None):
-        print(f">>>Called command 'help' with argument {com}")
+        logging.info(f">>>Called command 'help' with argument {com}")
         if com == None:
             embed = discord.Embed(title = f"{self.client.user.name}'s help menu (alias : {self.client.get_prefix()}h)", description = "For details, type .help <argument>. List of commands are:", color = 0xa1ee33)
             embed.add_field(name = "REGULAR COMMANDS", value = "=======", inline = False)

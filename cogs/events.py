@@ -1,4 +1,4 @@
-import discord, os
+import discord, os, logging
 from discord.ext import commands
 
 
@@ -10,7 +10,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         if member.bot == False:
-            print(f'>>>>>[{member.guild}] New member: {member}')
+            logging.info(f'>>>>>[{member.guild}] New member: {member}')
             data = []
             for filename in os.listdir('./guilds'):
                 if filename == f'{member.guild.id}.guild':
@@ -20,7 +20,7 @@ class Events(commands.Cog):
                 role = discord.utils.get(member.guild.roles, name = data[0][:-1])
                 await member.add_roles(role)
         else:
-            print(f'>>>>>[{member.guild}] New bot: {member}')
+            logging.info(f'>>>>>[{member.guild}] New bot: {member}')
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -34,7 +34,7 @@ class Events(commands.Cog):
         if isinstance(error, passerrors):
             pass
         elif isinstance(error, commands.CommandInvokeError):
-            print(f"Exception on command '{ctx.message.content}':\n\t{error}")
+            logging.error(f"Exception on command '{ctx.message.content}':\n\t{error}")
 
 def setup(client):
     client.add_cog(Events(client))

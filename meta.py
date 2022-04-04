@@ -1,6 +1,6 @@
 class MetaInfo:
 
-    bot_version = "0.2.3"
+    bot_version = "0.3.1"
     bot_invite_link = "https://discordapp.com/api/oauth2/authorize?client_id=479774802899501056&permissions=8&scope=bot"
     owner_server_invite_link = "https://discord.gg/qDJdDEn"
     embed_thumbnail_url = "https://cdn.discordapp.com/attachments/479409875860979712/492483239580008458/Mayuri_Shiina.png"

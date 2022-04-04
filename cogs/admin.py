@@ -1,4 +1,4 @@
-import discord
+import discord, logging
 from discord.ext import commands
 
 
@@ -10,10 +10,9 @@ class Admin(commands.Cog):
     @commands.command(aliases = ['c'])
     async def clear(self, ctx, amount: int = 1, userArg = None):
         if ctx.message.author.guild_permissions.manage_messages == True:
-            print(f">>>Called command 'clear' with argument {amount} : {ctx.message.author}")
+            logging.info(f">>>Called command 'clear' with argument {amount} : {ctx.message.author}")
             if userArg != None:
-                print(f" Targeted user: {userArg}")
-                print(str(userArg)[3:-1])
+                logging.info(f" Targeted user: {userArg}")
                 userid = str(userArg)[3:-1]
                 await ctx.message.delete()
                 async for message in ctx.channel.history(limit = 500):
@@ -29,19 +28,19 @@ class Admin(commands.Cog):
     @commands.command()
     async def kick(self, ctx, member: discord.Member, *, reason = None):
         if ctx.message.author.guild_permissions.kick_members == True:
-            print(f">>>Called command 'kick' of {member} with reason '{reason}' : {ctx.message.author}")
+            logging.info(f">>>Called command 'kick' of {member} with reason '{reason}' : {ctx.message.author}")
             await member.kick(reason = reason)
 
     @commands.command()
     async def ban(self, ctx, member: discord.Member, *, reason = None):
         if ctx.message.author.guild_permissions.ban_members == True:
-            print(f">>>Called command 'ban' of {member} with reason '{reason}' : {ctx.message.author}")
+            logging.info(f">>>Called command 'ban' of {member} with reason '{reason}' : {ctx.message.author}")
             await member.ban(reason = reason)
 
     @commands.command()
     async def unban(self, ctx, *, member):
         if ctx.message.author.guild_permissions.ban_members == True:
-            print(f">>>Called command 'unban' of {member} : {ctx.message.author}")
+            logging.info(f">>>Called command 'unban' of {member} : {ctx.message.author}")
             banned_users = await ctx.guild.bans()
             member_name, member_discriminator = member.split('#')
             for ban_entry in banned_users:
@@ -53,7 +52,7 @@ class Admin(commands.Cog):
     @commands.command(aliases = ['arole'])
     async def autorole(self, ctx, var = 'True'):
         if ctx.message.author.guild_permissions.manage_roles == True:
-            print(f">>>Called command 'autorole' on [{ctx.guild}] with argument {var} : {ctx.message.author}")
+            logging.info(f">>>Called command 'autorole' on [{ctx.guild}] with argument {var} : {ctx.message.author}")
             data = []
             with open(f"./guilds/{ctx.guild.id}.guild", "r") as file:
                 data = file.readlines()
