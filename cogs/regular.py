@@ -53,7 +53,7 @@ class Regular(commands.Cog):
     async def info(self, ctx):
         logging.info(">>>Called command 'info'")
         embed = discord.Embed(title = f"{self.client.user.name}", description = "Cute Mayushii doing her best for ya!", color = 0xa1ee33)
-        embed.set_author(name = f"{await self.client.fetch_user(self.client.owner_id)} 's", icon_url = (await self.client.fetch_user(self.client.owner_id)).avatar_url)
+        embed.set_author(name = f"{await self.client.fetch_user(self.client.owner_id)} 's", icon_url = str((await self.client.fetch_user(self.client.owner_id)).avatar_url))
         embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
         embed.add_field(name = "Gild count", value = len(self.client.guilds))
         data = []
