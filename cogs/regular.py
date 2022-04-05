@@ -1,9 +1,13 @@
-import discord, asyncio, logging
+import discord, asyncio, datetime, logging
 from discord.ext import commands
+from bot import BotBasics
 from meta import MetaInfo as MI
 
 
 class Regular(commands.Cog):
+
+    last_youy: datetime.datetime = None
+    youy_limit = 5
 
     def __init__(self, client):
         self.client = client
@@ -16,6 +20,14 @@ class Regular(commands.Cog):
         vc.play(discord.FFmpegPCMAudio('tuturu.mp3'))
         await asyncio.sleep(2)
         await vc.disconnect()
+
+    @commands.command()
+    async def youy(self, ctx):
+        logging.info(">>>Called command 'youy'")
+        days, hours, minutes, seconds = BotBasics.deltatime(__class__.last_youy)
+        if __class__.last_youy is None or (days*24*60)+(hours*60)+minutes > __class__.youy_limit:
+           __class__.last_youy = datetime.datetime.utcnow()
+           await ctx.send("https://media.discordapp.net/attachments/622011856642637825/622012196397776896/JPEG_20181001_113150.jpg")
 
     @commands.command()
     async def invite(self, ctx):

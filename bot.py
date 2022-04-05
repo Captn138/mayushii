@@ -1,6 +1,5 @@
 import discord, datetime, itertools, os, dotenv, logging
 from discord.ext import tasks, commands
-from cogs.admin import Admin
 from meta import MetaInfo as MI
 
 client = commands.Bot('.')
@@ -12,19 +11,22 @@ class BotBasics:
     status = itertools.cycle(['with Okarin', 'GUILDS', 'UPTIME', f"in ver {MI.get_bot_version()}"])
     start_time = datetime.datetime.utcnow()
 
-    def uptime():
+    def deltatime(start_time: datetime.datetime):
         now = datetime.datetime.utcnow()
-        delta = now-__class__.start_time
+        if start_time is None:
+            start_time = now
+        delta = now-start_time
         hours, remainder = divmod(int(delta.total_seconds()), 3600)
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
-        return f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds."
+        return days, hours, minutes, seconds
 
     @tasks.loop(seconds = 10)
     async def change_status():
         __class__.current_status = next(__class__.status)
         if __class__.current_status == 'UPTIME':
-            status_text = f"since {__class__.uptime()}"
+            days, hours, minutes, seconds = __class__.deltatime(__class__.start_time)
+            status_text = f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds."
         elif __class__.current_status == 'GUILDS':
             status_text = f"in {len(client.guilds)} servers"
         else:
