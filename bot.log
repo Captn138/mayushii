@@ -1,0 +1,10 @@
+2022-04-06 12:07:05,596 - INFO: logging in using static token
+2022-04-06 12:07:05,978 - INFO: Shard ID None has sent the IDENTIFY payload.
+2022-04-06 12:07:06,215 - INFO: Shard ID None has connected to Gateway: ["gateway-prd-main-v5gk",{"micros":120958,"calls":["discord-sessions-blue-prd-2-16",{"micros":117857,"calls":["start_session",{"micros":74062,"calls":["discord-api-6cbc6fd76c-7qsm5",{"micros":67981,"calls":["get_user",{"micros":12886},"add_authorized_ip",{"micros":6487},"get_guilds",{"micros":8991},"coros_wait",{"micros":4}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":9695,"calls":[]}]}]}] (Session ID: c46268f5cf0a8af563f5e2dd1040acf2).
+2022-04-06 12:07:08,250 - INFO: Loaded all extensions
+2022-04-06 12:07:08,250 - INFO: Mayushii ☆ (id: 479774802899501056) logged in !
+2022-04-06 12:07:11,572 - INFO: >>>Called command 'info'
+2022-04-06 12:08:53,772 - INFO: Cleaning up tasks.
+2022-04-06 12:08:53,772 - INFO: Cleaning up after 2 tasks.
+2022-04-06 12:08:53,773 - INFO: All tasks finished cancelling.
+2022-04-06 12:08:53,774 - INFO: Closing the event loop.

@@ -7,31 +7,15 @@ client = commands.Bot('.')
 
 class BotBasics:
 
-    current_status = ''
-    status = itertools.cycle(['with Okarin', 'GUILDS', 'UPTIME', f"in ver {MI.get_bot_version()}"])
-    start_time = datetime.datetime.utcnow()
-
     def deltatime(start_time: datetime.datetime):
         now = datetime.datetime.utcnow()
         if start_time is None:
-            start_time = now
+            return 0, 0, 0, 0
         delta = now-start_time
         hours, remainder = divmod(int(delta.total_seconds()), 3600)
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
         return days, hours, minutes, seconds
-
-    @tasks.loop(seconds = 10)
-    async def change_status():
-        __class__.current_status = next(__class__.status)
-        if __class__.current_status == 'UPTIME':
-            days, hours, minutes, seconds = __class__.deltatime(__class__.start_time)
-            status_text = f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds."
-        elif __class__.current_status == 'GUILDS':
-            status_text = f"in {len(client.guilds)} servers"
-        else:
-            status_text = __class__.current_status
-        await client.change_presence(status = discord.Status.idle, activity = discord.Game(name = status_text))
 
     def load_all():
         for extension in os.listdir('./cogs'):
@@ -47,6 +31,10 @@ class BotBasics:
 
 
 class ManagementCommands(commands.Cog):
+
+    current_status = ''
+    status = itertools.cycle(['with Okarin', 'GUILDS', 'UPTIME', f"in ver {MI.get_bot_version()}"])
+    start_time = datetime.datetime.utcnow()
 
     def __init__(self, client):
         self.client = client
@@ -85,20 +73,31 @@ class ManagementCommands(commands.Cog):
             logging.info("Shutting down...")
             await client.close()
 
+    @tasks.loop(seconds = 10)
+    async def change_status():
+        __class__.current_status = next(__class__.status)
+        if __class__.current_status == 'UPTIME':
+            days, hours, minutes, seconds = BotBasics.deltatime(__class__.start_time)
+            status_text = f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds."
+        elif __class__.current_status == 'GUILDS':
+            status_text = f"in {len(client.guilds)} servers"
+        else:
+            status_text = __class__.current_status
+        await client.change_presence(status = discord.Status.idle, activity = discord.Game(name = status_text))
+
 
 @client.event
 async def on_ready():
+    BotBasics.load_all()
     logging.info(f"{client.user.name} (id: {client.user.id}) logged in !")
-    BotBasics.change_status.start()
+    ManagementCommands.change_status.start()
 
 def main():
     logging.basicConfig(filename='bot.log', filemode='w', level=logging.INFO, format="%(asctime)s - %(levelname)s: %(message)s")
     dotenv.load_dotenv()
     TOKEN = os.getenv('TOKEN')
     client.remove_command('help')
-    BotBasics.load_all()
     client.run(TOKEN)
-    print(client.fetch_user(client.owner_id))
 
 if __name__ == "__main__":
     main()
