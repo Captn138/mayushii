@@ -26,10 +26,10 @@ class Regular(commands.Cog):
         logging.info(">>>Called command 'youy'")
         days, hours, minutes, seconds = BotBasics.deltatime(__class__.last_youy)
         if __class__.last_youy is None or (days*24*60)+(hours*60)+minutes > __class__.youy_limit:
-           __class__.last_youy = datetime.datetime.utcnow()
-           await ctx.send("https://media.discordapp.net/attachments/622011856642637825/622012196397776896/JPEG_20181001_113150.jpg")
+            __class__.last_youy = datetime.datetime.utcnow()
+            await ctx.send("https://media.discordapp.net/attachments/622011856642637825/622012196397776896/JPEG_20181001_113150.jpg")
         else:
-            ctx.send(f"Holà vilain garnement! Tu dois attendre {__class__.youy_limit} minutes entre chaque youy.")
+            await ctx.send(f"Holà vilain garnement! Tu dois attendre {__class__.youy_limit} minutes entre chaque youy.")
 
     @commands.command()
     async def invite(self, ctx):
