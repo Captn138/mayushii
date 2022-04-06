@@ -47,6 +47,7 @@ class Regular(commands.Cog):
         logging.info(">>>Called command 'dev'")
         embed = discord.Embed(title = f"{self.client.user.name}'s dev history", description = "All my updates should be here.", color = 0xa1ee33)
         embed.set_thumbnail(url = MI.get_embed_thumbnail_url())
+        embed.add_field(name = "Source code", value = "https://github.com/Captn138/mayushii")
         embed.add_field(name = "ver 0.3.2", value = "Fixed a snowflake error in info command, statically added owner_id in MetaInfo class since client.owner_id doesn't work as expected, will be removed when lib is fixed, moved some functions out of BotBasics class")
         embed.add_field(name = "ver 0.3.1", value = "Changed internal functions, fixed some missing quotes and imports, cleaned unnecessary files")
         embed.add_field(name = "ver 0.3.0", value = "A lot of rewrites after nearly 2 years of downtime, discord-rewrite.py became discord.py, a lot of commands have been simplified, better handeled some errors, removed useless code, added youy command")
