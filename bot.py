@@ -94,7 +94,7 @@ async def on_ready():
 
 def main():
     logging.basicConfig(filename='bot.log', filemode='w', level=logging.INFO, format="%(asctime)s - %(levelname)s: %(message)s")
-    dotenv.load_dotenv()
+    #dotenv.load_dotenv()
     TOKEN = os.getenv('TOKEN')
     client.remove_command('help')
     client.run(TOKEN)
