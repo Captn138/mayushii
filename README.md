@@ -5,7 +5,7 @@ Personal simple administrative Bot for Discord written with discord.py
 ```sh
 sudo apt install ffmpeg libffi-dev libnacl-dev python3-dev
 python3 -m pip install pip -U
-python3 -m pip install discord.py dotenv -U
+python3 -m pip install discord.py python-dotenv -U
 touch .env
 chmod 400 .env
 ```
