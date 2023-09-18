@@ -14,9 +14,7 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -39,6 +37,7 @@ jobs:
 #        pytest
   run:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - name: Setup .env file
       run: echo TOKEN=${{ Secrets.TOKEN }} > .env
