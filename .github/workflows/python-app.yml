@@ -42,5 +42,5 @@ jobs:
     - name: Setup .env file
       run: echo TOKEN=${{ Secrets.TOKEN }} > .env
     - name: Run Mayushii
-      run: ls #python3 bot.py
+      run: python3 bot.py
       
