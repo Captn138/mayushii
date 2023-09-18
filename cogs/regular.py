@@ -5,8 +5,8 @@ import asyncio
 import datetime
 import logging
 from discord.ext import commands
-from bot import BotBasics
 from meta import MetaInfo
+from bot import deltatime
 
 
 class Regular(commands.Cog):
@@ -36,7 +36,7 @@ class Regular(commands.Cog):
     async def youy(self, ctx):
         """Send the youy in chat."""
         logging.info(">>>Called command 'youy'")
-        days, hours, minutes, seconds = BotBasics.deltatime(__class__.last_youy)
+        days, hours, minutes, seconds = deltatime(__class__.last_youy)
         if __class__.last_youy is None or (days*24*60)+(hours*60)+minutes > __class__.youy_limit:
             __class__.last_youy = datetime.datetime.utcnow()
             await ctx.send
@@ -140,7 +140,7 @@ class Regular(commands.Cog):
         Returns:
             discord.Embed: The embed
         """
-        embed.add_field(inline=False, name=f"{command_prefix}youy", value="Displays youy. {__class__.youy_limit} \
+        embed.add_field(inline=False, name=f"{command_prefix}youy", value=f"Displays youy. {__class__.youy_limit} \
                     minutes timeout.")
         embed.add_field(inline=False, name="Usage:", value=f"{command_prefix}youy")
         return embed
@@ -303,34 +303,43 @@ class Regular(commands.Cog):
             embed.add_field(inline=False, name=f"{command_prefix}kick", value="Kicks a user. Kick members required.")
             embed.add_field(inline=False, name=f"{command_prefix}ban", value="Bans a user. Ban members required.")
             embed.add_field(inline=False, name=f"{command_prefix}unban", value="Unbans a user. Ban members required.")
-        elif com in ["tuturu", "youy", "autorole", "kick", "ban", "unban", "ping", "dev", "clear", "info", "invite"]:
+        else:
             embed = discord.Embed(title=f"{self.client.user.name}'s help menu", description="Specific command:",
                                   color=0xa1ee33)
-            embed_content = {
-                "tuturu": __class__.help_tuturu(command_prefix, embed),
-                "youy": __class__.help_youy(command_prefix, embed),
-                "autorole": __class__.help_autorole(command_prefix, embed),
-                "kick": __class__.help_kick(command_prefix, embed),
-                "ban": __class__.help_ban(command_prefix, embed),
-                "unban": __class__.help_unban(command_prefix, embed),
-                "ping": __class__.help_ping(command_prefix, embed),
-                "dev": __class__.help_dev(command_prefix, embed),
-                "clear": __class__.help_clear(command_prefix, embed),
-                "info": __class__.help_info(command_prefix, embed),
-                "invite": __class__.help_invite(command_prefix, embed)
-            }
-            embed = embed_content[com]
-        else:
-            await ctx.message.delete()
-            return
+            match com:
+                case "tuturu":
+                    embed = Regular.help_tuturu(command_prefix, embed)
+                case "youy":
+                    embed = Regular.help_youy(command_prefix, embed)
+                case "autorole":
+                    embed = Regular.help_autorole(command_prefix, embed)
+                case "kick":
+                    embed = Regular.help_kick(command_prefix, embed)
+                case "ban":
+                    embed = Regular.help_ban(command_prefix, embed)
+                case "unban":
+                    embed = Regular.help_unban(command_prefix, embed)
+                case "ping":
+                    embed = Regular.help_ping(command_prefix, embed)
+                case "dev":
+                    embed = Regular.help_dev(command_prefix, embed)
+                case "clear":
+                    embed = Regular.help_clear(command_prefix, embed)
+                case "info":
+                    embed = Regular.help_info(command_prefix, embed)
+                case "invite":
+                    embed = Regular.help_invite(command_prefix, embed)
+                case _:
+                    await ctx.message.delete()
+                    return
         await ctx.send(embed=embed)
         await ctx.message.delete()
 
 
-def setup(client):
+async def setup(client):
     """Load the class on the bot.
 
     Args:
         client (discord.ext.commands.bot): The bot on which to load the class.
     """
-    client.add_cog(Regular(client))
+    await client.add_cog(Regular(client))

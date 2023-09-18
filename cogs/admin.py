@@ -113,10 +113,10 @@ class Admin(commands.Cog):
                     await ctx.send(f"Autoroles have been changed to {answer.content}", delete_after=5)
 
 
-def setup(client):
+async def setup(client):
     """Load the class on the bot.
 
     Args:
         client (discord.ext.commands.bot): The bot on which to load the class.
     """
-    client.add_cog(Admin(client))
+    await client.add_cog(Admin(client))

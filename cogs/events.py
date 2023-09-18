@@ -51,11 +51,11 @@ class Events(commands.Cog):
                 others so I can work properly.")
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error: discord.CommandError):
+    async def on_command_error(self, ctx, error: discord.ext.commands.CommandError):
         """Trigger on command errors.
 
         Args:
-            error (discord.CommandError): The error raised.
+            error : The error raised.
         """
         passerrors = (commands.CommandNotFound, commands.MissingRequiredArgument)
         if isinstance(error, passerrors):
@@ -64,10 +64,10 @@ class Events(commands.Cog):
             logging.error(f"Exception on command '{ctx.message.content}':\n\t{error}")
 
 
-def setup(client):
+async def setup(client):
     """Load the class on the bot.
 
     Args:
         client (discord.ext.commands.bot): The bot on which to load the class.
     """
-    client.add_cog(Events(client))
+    await client.add_cog(Events(client))
