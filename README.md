@@ -1,5 +1,6 @@
 # mayushii
 Personal simple administrative Bot for Discord written with discord.py
+
 ![workflow](https://github.com/Captn138/mayushii/actions/workflows/python-app.yml/badge.svg)
 
 ## Installation
