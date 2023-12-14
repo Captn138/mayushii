@@ -47,9 +47,11 @@ jobs:
       run: echo TOKEN=${{ Secrets.TOKEN }} > .env
     - name: Clean running
       run: ssh mayushii@omv.jaajeur.xyz "/home/mayushii/stop.sh"
+    - name: Deploy scripts
+      run: scp start.sh stop.sh mayushii@omv.jaajeur.xyz:~
     - name: Deploy Mayushii
       run: rsync -r --exclude '.ssh' --exclude '.git' . mayushii@omv.jaajeur.xyz:~/bot/
     - name: Run Mayushii
-      run: ssh mayushii@omv.jaajeur.xyz "/home/mayushii/start.sh"
+      run: ssh mayushii@omv.jaajeur.xyz "chmod u+x start.sh stop.sh && /home/mayushii/start.sh"
       
       
