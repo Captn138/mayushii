@@ -3,7 +3,7 @@
 set -e
 
 if [[ $(python3 --version 2> /dev/null | awk -F. '{print $2}') -lt 10 && ! $(python3.10 --version 2> /dev/null) ]];
-	cat << EOI >> /dev/stderr
+	then cat << EOI >> /dev/stderr
 Python 3.10 or greater is not installed!
 Please install it using the following commands if your distro does not support this version via its packet manager:
 wget https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tgz
