@@ -26,4 +26,4 @@ fi
 $PYTHON_BIN -m venv ~/venv
 pip3 install -r ~/bot/requirements.txt
 cd ~/bot
-tmux new-session -d -s mayushii python3 bot.py
+tmux new-session -d -s mayushii "source ~/venv/bin/activate && python3 bot.py"
