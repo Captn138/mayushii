@@ -2,6 +2,9 @@
 
 set -e
 
+exec > >(tee -i logfile.log)
+exec 2>&1
+
 if [[ $(python3 --version 2> /dev/null | awk -F. '{print $2}') -lt 10 && ! $(python3.10 --version 2> /dev/null) ]];
 	then cat << EOI >> /dev/stderr
 Python 3.10 or greater is not installed!
