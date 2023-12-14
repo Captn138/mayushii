@@ -5,7 +5,6 @@ name: Python application
 
 on:
   workflow_dispatch:
-    branches: [ "master" ]
   push:
     branches: [ "master" ]
   pull_request:
@@ -18,7 +17,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ Secrets.SSHKEY }}
+        name: id_ed25519
+        known_hosts: ${{ Secrets.SSHKNOWNHOSTS }}
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
@@ -39,6 +45,11 @@ jobs:
 #        pytest
     - name: Setup .env file
       run: echo TOKEN=${{ Secrets.TOKEN }} > .env
+    - name: Clean running
+      run: ssh mayushii@omv.jaajeur.xyz "/home/mayushii/stop.sh"
+    - name: Deploy Mayushii
+      run: rsync -r --exclude '.ssh' --exclude '.git' . mayushii@omv.jaajeur.xyz:~/bot/
     - name: Run Mayushii
-      run: python3 bot.py
+      run: ssh mayushii@omv.jaajeur.xyz "/home/mayushii/start.sh"
+      
       
