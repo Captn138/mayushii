@@ -37,6 +37,8 @@ jobs:
 #    - name: Test with pytest
 #      run: |
 #        pytest
+    - name: Export Token
+      run: echo TOKEN=${{ Secrets.TOKEN }} > .env
     - name: Restart service
       run: sudo systemctl restart mayushii.service
       
